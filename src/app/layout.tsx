@@ -1,28 +1,44 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
+"use client";
+
+import "./globals.css"; // 👈 THIS IS THE MISSING LINK!
+import { Inter } from "next/font/google"; // Standard Next.js font
+import { useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import Navbar from "@/components/Navbar";
+import { Toaster } from "react-hot-toast";
 import QueryProvider from "@/providers/QueryProvider";
-import { Toaster } from "react-hot-toast"; // The Apple-style popups!
+// import { title } from "process";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "Traceback | Lost & Found",
-  description: "Find what you lost, return what you found.",
-};
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const userId = localStorage.getItem("user_id");
+    const publicPages = ["/login", "/register"];
+
+    if (!userId && !publicPages.includes(pathname)) {
+      router.push("/login");
+    }
+  }, [pathname, router]);
+
+  const isPublicPage = ["/login", "/register"].includes(pathname);
+
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-gray-50 min-h-screen`}>
-        {/* We wrap the app so React Query works everywhere */}
+      {/* Add the font class here to keep typography clean */}
+      <title>TraceBack</title>
+      <body className={inter.className}> 
         <QueryProvider>
-          {children}
-          {/* We put the Toaster here so notifications can pop up on any page */}
+          {!isPublicPage && <Navbar />}
+          {/* We use a main container to ensure content doesn't hide behind the sticky Navbar */}
+          <main>
+            {children}
+          </main>
           <Toaster position="bottom-right" />
         </QueryProvider>
       </body>

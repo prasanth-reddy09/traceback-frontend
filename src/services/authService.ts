@@ -1,36 +1,44 @@
 import { apiClient } from "@/lib/apiClient";
 
 export const authService = {
-  // 1. Register a new user
-  register: async (userData: any) => {
-    // Hits POST http://localhost:8080/api/users/register
-    const response = await apiClient.post("/users/register", userData);
+ register: async (userData: any) => {
+    // TRANSLATION LAYER: Map the frontend 'password' to the backend 'passwordHash'
+    const payload = {
+      name: userData.name,
+      email: userData.email,
+      passwordHash: userData.password // <-- The Magic Fix!
+    };
+
+    const response = await apiClient.post("/users/register", payload);
     return response.data;
   },
 
-  // 2. Log in and save the token
   login: async (credentials: any) => {
-    // Hits POST http://localhost:8080/api/users/login
     const response = await apiClient.post("/users/login", credentials);
+    const data = response.data; // This contains token, userId, and name!
     
-    // Spring Boot sends back the JWT token. Let's save it to the browser's safe!
-    const token = response.data; 
-    
-    if (token) {
-      // If your backend returns a JSON object like { token: "ey..." }, use token.token
-      // If it returns a raw string, just use token.
-      const jwt = typeof token === "string" ? token : token.token;
-      localStorage.setItem("jwt_token", jwt);
+    if (data.token) {
+      // Save the token
+      localStorage.setItem("jwt_token", data.token);
+      
+      // NEW: Save the user ID and name directly to localStorage!
+      if (data.userId) {
+        localStorage.setItem("user_id", data.userId.toString());
+      }
+      if (data.name) {
+        localStorage.setItem("user_name", data.name);
+      }
     }
     
-    return response.data;
+    return data;
   },
 
-  // 3. Log out (Just destroy the token!)
   logout: () => {
     if (typeof window !== "undefined") {
+      // Clear EVERYTHING out of the safe when they log out
       localStorage.removeItem("jwt_token");
-      // Redirect back to the login page
+      localStorage.removeItem("user_id");
+      localStorage.removeItem("user_name");
       window.location.href = "/login";
     }
   }
