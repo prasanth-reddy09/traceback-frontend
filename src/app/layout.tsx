@@ -7,6 +7,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import { Toaster } from "react-hot-toast";
 import QueryProvider from "@/providers/QueryProvider";
+import { Suspense } from "react";
 // import { title } from "process";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -34,7 +35,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <title>TraceBack</title>
       <body className={inter.className}> 
         <QueryProvider>
-          {!isPublicPage && <Navbar />}
+          {/* Wrap the Navbar in its own Suspense boundary */}
+        
+          {!isPublicPage && <Suspense fallback={<div className="h-16 bg-white border-b" />}>
+          <Navbar />
+        </Suspense>}
           {/* We use a main container to ensure content doesn't hide behind the sticky Navbar */}
           <main>
             {children}
