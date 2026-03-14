@@ -63,8 +63,10 @@ export default function ChatRoom({ claimId }: ChatRoomProps) {
     
     fetchChatHistory();
 
+    const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+
     // 3. Connect to the Spring Boot Radio Tower for LIVE messages
-    const socket = new SockJS("http://localhost:8080/ws");
+    const socket = new SockJS(`${BASE_URL}/ws`);
     const client = Stomp.over(socket);
     
     // Turn off the massive wall of debug logs in the console
