@@ -1,37 +1,31 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react"; // Added Suspense
 import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { itemService } from "@/services/itemService";
 import { claimService } from "@/services/claimService";
 
-// Import your Refactored Components
 import { SearchSection } from "./components/SearchSection";
 import { FeedView } from "./components/FeedView";
-// import { MyReportsView } from "./components/MyReportsView"; // You can use FeedView here too
 import { MyClaimsView } from "./components/MyClaimsView";
 import { InboxView } from "./components/InboxView";
 
-export default function DashboardPage() {
+// 1. Move everything into a internal component
+function DashboardContent() {
   const searchParams = useSearchParams();
   const activeTab = searchParams.get("tab") || "feed";
   
-  // 1. Local State for Filters
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [userId, setUserId] = useState<string | null>(null);
 
   const categories = ["All", "Electronics", "Pets", "Documents", "Wallets", "Accessories", "Others"];
 
-  // Handle Hydration / LocalStorage safely
   useEffect(() => {
     setUserId(localStorage.getItem("user_id"));
   }, []);
 
-  // 2. DATA QUERIES
-  
-  // Fetch Items (Feed or My Reported)
   const { data: items, isLoading: loadingItems } = useQuery({
     queryKey: ["items", activeTab, searchQuery, selectedCategory],
     queryFn: () => {
@@ -42,7 +36,6 @@ export default function DashboardPage() {
     enabled: activeTab === "feed" || activeTab === "my-items",
   });
 
-  // Fetch Claims (Combined for Inbox and My Claims)
   const { data: claims, isLoading: loadingClaims } = useQuery({
     queryKey: ["all-claims", activeTab],
     queryFn: async () => {
@@ -53,12 +46,10 @@ export default function DashboardPage() {
     enabled: activeTab === "inbox" || activeTab === "my-claims",
   });
 
-  // 3. TAB RENDERER (The SRP Switch)
   const renderContent = () => {
     switch (activeTab) {
       case "inbox":
         return <InboxView claims={claims} isLoading={loadingClaims} userId={userId} />;
-      
       case "my-items":
         return (
           <div className="space-y-6">
@@ -66,10 +57,8 @@ export default function DashboardPage() {
             <FeedView items={items} isLoading={loadingItems} />
           </div>
         );
-
       case "my-claims":
         return <MyClaimsView claims={claims} isLoading={loadingClaims}  userId={userId}/>;
-
       case "feed":
       default:
         return (
@@ -83,8 +72,6 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      
-      {/* Search only appears on the main Feed */}
       {activeTab === "feed" && (
         <SearchSection 
           searchQuery={searchQuery}
@@ -94,10 +81,18 @@ export default function DashboardPage() {
           categories={categories}
         />
       )}
-
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
         {renderContent()}
       </main>
     </div>
+  );
+}
+
+// 2. This is the part Vercel needs! 
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={<div className="p-10 text-center">Loading Dashboard...</div>}>
+      <DashboardContent />
+    </Suspense>
   );
 }
