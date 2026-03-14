@@ -73,7 +73,7 @@ export default function Navbar() {
             </button>
 
             <div className="group flex items-center gap-2 relative">
-              <button className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold border-2 border-white shadow-sm hover:scale-105 transition-transform">
+              <button className="w-10 h-10 bg-blue-600  cursor-pointer rounded-full flex items-center justify-center text-white font-bold border-2 border-white shadow-sm hover:scale-105 transition-transform">
                 {localStorage.getItem("user_name")?.charAt(0).toUpperCase() ||
                   "U"}
               </button>
@@ -87,7 +87,7 @@ export default function Navbar() {
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-bold"
+                  className="w-full flex items-center  cursor-pointer gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-bold"
                 >
                   <LogOut className="w-4 h-4" /> Sign Out
                 </button>

@@ -1,34 +1,43 @@
 // src/app/dashboard/components/MyClaimsView.tsx
-import { Clock, ChevronRight } from "lucide-react";
-import Link from "next/link";
+"use client";
 
-export function MyClaimsView({ claims, isLoading }: any) {
-  if (isLoading) return <div>Heloo test</div>
-//   <div className="space-y-4 animate-pulse">{[1,2].map(i => <div key(i) className="h-24 bg-gray-200 rounded-2xl" />)}</div>;
-  if (!claims || claims.length === 0) return <div className="text-center py-20 text-gray-400">You haven't claimed any items yet.</div>;
+import { Clock, Inbox } from "lucide-react";
+import { InboxCard } from "./InboxCard";
+
+export function MyClaimsView({ claims, isLoading, userId }: any) {
+  if (isLoading) return <LoadingSkeleton />;
+  
+  if (!claims || claims.length === 0) return (
+    <div className="text-center py-20 bg-white rounded-[40px] border-2 border-dashed border-gray-100">
+      <Inbox className="w-12 h-12 text-gray-200 mx-auto mb-4" />
+      <h3 className="text-lg font-bold text-gray-900">No claims yet</h3>
+      <p className="text-gray-400 text-sm">When you try to claim an item, it will show up here.</p>
+    </div>
+  );
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {claims.map((claim: any) => (
-        <Link key={claim.id} href={`/item/${claim.item?.id}`}>
-          <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:border-blue-500 transition-all flex items-center justify-between group">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className={`text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ${
-                  claim.status === 'APPROVED' ? 'bg-green-100 text-green-700' : 
-                  claim.status === 'REJECTED' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
-                }`}>
-                  {claim.status}
-                </span>
-                <span className="text-[10px] text-gray-400 font-medium flex items-center gap-1">
-                  <Clock className="w-3 h-3" /> {new Date(claim.createdAt).toLocaleDateString()}
-                </span>
-              </div>
-              <h3 className="text-lg font-bold text-gray-900">{claim.item?.title}</h3>
-            </div>
-            <ChevronRight className="text-gray-300 group-hover:text-blue-600 transition-all" />
-          </div>
-        </Link>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between mb-6 px-2">
+        <h2 className="text-xl font-bold text-gray-900">Your Claims</h2>
+        <span className="bg-amber-100 text-amber-700 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter">
+          {claims.length} Outgoing
+        </span>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4">
+        {claims.map((claim: any) => (
+          <InboxCard key={claim.id} claim={claim} currentUserId={userId} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function LoadingSkeleton() {
+  return (
+    <div className="space-y-4 animate-pulse">
+      {[1, 2].map((i) => (
+        <div key={i} className="h-28 bg-gray-200 rounded-[28px]" />
       ))}
     </div>
   );

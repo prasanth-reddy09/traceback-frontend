@@ -129,7 +129,7 @@ export default function ItemDetailsPage() {
                     <div className="flex flex-col gap-2">
                       <button 
                         onClick={() => setSelectedClaimId(null)}
-                        className="text-sm text-blue-600 hover:text-blue-800 flex items-center mb-2 font-medium"
+                        className="text-sm text-blue-600 cursor-pointer hover:text-blue-800 flex items-center mb-2 font-medium"
                       >
                         <ArrowLeft className="w-4 h-4 mr-1" /> Back to Claims List
                       </button>
@@ -140,14 +140,14 @@ export default function ItemDetailsPage() {
                         <button 
                           onClick={() => resolveMutation.mutate({ claimId: selectedClaimId, action: "APPROVE" })}
                           disabled={resolveMutation.isPending}
-                          className="bg-green-600 text-white py-2 rounded-lg text-sm font-bold hover:bg-green-700 transition-colors disabled:opacity-50"
+                          className="bg-green-600 text-white py-2  cursor-pointer rounded-lg text-sm font-bold hover:bg-green-700 transition-colors disabled:opacity-50"
                         >
                           {resolveMutation.isPending ? "..." : "Approve"}
                         </button>
                         <button 
                           onClick={() => resolveMutation.mutate({ claimId: selectedClaimId, action: "REJECT" })}
                           disabled={resolveMutation.isPending}
-                          className="bg-red-600 text-white py-2 rounded-lg text-sm font-bold hover:bg-red-700 transition-colors disabled:opacity-50"
+                          className="bg-red-600 text-white py-2  cursor-pointer rounded-lg text-sm font-bold hover:bg-red-700 transition-colors disabled:opacity-50"
                         >
                           {resolveMutation.isPending ? "..." : "Reject"}
                         </button>
@@ -179,7 +179,7 @@ export default function ItemDetailsPage() {
                             </div>
                             <button 
                               onClick={() => setSelectedClaimId(claim.id)}
-                              className="w-full mt-2 bg-gray-50 text-blue-600 border border-gray-200 py-2 rounded-md text-sm font-semibold hover:bg-blue-50 transition-colors"
+                              className="w-full mt-2 bg-gray-50  cursor-pointer text-blue-600 border border-gray-200 py-2 rounded-md text-sm font-semibold hover:bg-blue-50 transition-colors"
                             >
                               Open Chat
                             </button>
