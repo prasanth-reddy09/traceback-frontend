@@ -5,7 +5,7 @@ import axios from "axios";
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
 // 1. Create the base client pointing to your Spring Boot API
 export const apiClient = axios.create({
-  baseURL: BASE_URL,
+  baseURL: BASE_URL+"/api",
   headers: {
     "Content-Type": "application/json",
   },
