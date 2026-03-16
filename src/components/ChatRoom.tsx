@@ -6,7 +6,6 @@ import { Stomp } from "@stomp/stompjs";
 import { apiClient } from "@/lib/apiClient";
 import { Send } from "lucide-react";
 
-// Our clean, predictable Message interface
 interface Message {
   id?: number;
   senderId: number;
@@ -38,16 +37,13 @@ export default function ChatRoom({ claimId }: ChatRoomProps) {
   }, [messages]);
 
   useEffect(() => {
-    // 1. Grab the current user's ID
     const storedId = localStorage.getItem("user_id");
     if (storedId) setCurrentUserId(Number(storedId));
 
-    // 2. Fetch the Chat History from the database first!
     const fetchChatHistory = async () => {
       try {
         const response = await apiClient.get(`/messages/${claimId}`);
         
-        // Map the Java Entity to match our React Interface
         const formattedMessages = response.data.map((msg: any) => ({
           id: msg.id,
           content: msg.content,
@@ -65,21 +61,17 @@ export default function ChatRoom({ claimId }: ChatRoomProps) {
 
     const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
 
-    // 3. Connect to the Spring Boot Radio Tower for LIVE messages
     const socket = new SockJS(`${BASE_URL}/ws`);
     const client = Stomp.over(socket);
     
-    // Turn off the massive wall of debug logs in the console
     client.debug = () => {}; 
 
     client.connect({}, () => {
       console.log("Connected to Chat Room:", claimId);
       
-      // Listen to this specific claim's channel
       client.subscribe(`/topic/chat/${claimId}`, (messageOutput) => {
         const rawMsg = JSON.parse(messageOutput.body);
         
-        // Ensure incoming live messages match our interface too
         const newLiveMessage: Message = {
           id: rawMsg.id,
           content: rawMsg.content,
@@ -93,13 +85,11 @@ export default function ChatRoom({ claimId }: ChatRoomProps) {
 
     stompClientRef.current = client;
 
-    // 4. Cleanup when the component unmounts (user leaves the page)
     return () => {
       if (client) client.disconnect();
     };
   }, [claimId]);
 
-  // 5. Send a message to your Spring Boot REST API
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
@@ -111,7 +101,7 @@ export default function ChatRoom({ claimId }: ChatRoomProps) {
         content: input,
       });
       
-      setInput(""); // Clear input instantly
+      setInput(""); 
     } catch (error) {
       console.error("Failed to send message", error);
     }
@@ -135,7 +125,6 @@ export default function ChatRoom({ claimId }: ChatRoomProps) {
           </div>
         ) : (
           messages.map((msg, index) => {
-            // Check if I sent this message
             const isMe = msg.senderId === currentUserId;
 
             return (
@@ -156,7 +145,6 @@ export default function ChatRoom({ claimId }: ChatRoomProps) {
             );
           })
         )}
-        {/* Invisible div to anchor our auto-scroll feature! */}
         <div ref={messagesEndRef} />
       </div>
 

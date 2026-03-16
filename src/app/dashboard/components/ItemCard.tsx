@@ -10,7 +10,7 @@ export function ItemCard({ item }: { item: any }) {
       href={`/item/${item.id}`} 
       className={`group ${isResolved ? 'opacity-50 grayscale pointer-events-none' : ''}`}
     >
-      <div className="bg-white rounded-[32px] border border-gray-100 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500">
+      <div className="bg-white rounded-4xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500">
         <div className="relative h-60 bg-gray-100 overflow-hidden">
           {item.imageUrl ? (
             <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />

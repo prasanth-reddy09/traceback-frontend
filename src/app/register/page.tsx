@@ -10,7 +10,6 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { UserPlus, Mail, Lock, User } from "lucide-react";
 
-// 1. The Bouncer's Rules for New Users
 const registerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
@@ -30,12 +29,10 @@ export default function RegisterPage() {
     resolver: zodResolver(registerSchema),
   });
 
-  // 2. The API Call
   const registerMutation = useMutation({
     mutationFn: (data: RegisterFormData) => authService.register(data),
     onSuccess: () => {
       toast.success("Account created! Please log in.");
-      // Send them to the login page so they can use their shiny new credentials
       router.push("/login");
     },
     onError: (error: any) => {

@@ -14,8 +14,8 @@ import Link from "next/link";
 
 // Zod Schema for validation
 const itemSchema = z.object({
-  title: z.string().min(2, "Item title is required"),       // Changed from 'name' to 'title'
-  location: z.string().min(2, "Location is required"),      // NEW: Added location
+  title: z.string().min(2, "Item title is required"),      
+  location: z.string().min(2, "Location is required"),     
   description: z.string().min(5, "Please provide a brief description"),
   category: z.string().min(1, "Category is required"),
   status: z.enum(["LOST", "FOUND"]),
@@ -38,7 +38,6 @@ export default function ReportItemPage() {
     mutationFn: itemService.reportItem,
     onSuccess: () => {
       toast.success("Item reported successfully!");
-      // Tell React Query to refresh the dashboard items!
       queryClient.invalidateQueries({ queryKey: ["items"] }); 
       router.push("/dashboard");
     },
@@ -50,20 +49,17 @@ export default function ReportItemPage() {
       setIsUploading(true);
       let imageUrl = null;
 
-      // If they selected an image, run our brilliant Cloudinary architecture!
       if (selectedFile) {
         toast.loading("Uploading image...", { id: "upload" });
         imageUrl = await imageService.uploadToCloudinary(selectedFile);
         toast.dismiss("upload");
       }
 
-      // Combine the form data with the new secure URL
       const finalItemData = {
         ...data,
         imageUrl: imageUrl,
       };
 
-      // Send to Spring Boot
       reportMutation.mutate(finalItemData);
     } catch (error) {
       toast.dismiss("upload");
@@ -83,28 +79,13 @@ export default function ReportItemPage() {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* Status Selection */}
-          {/* <div className="flex gap-4">
-            <label className="flex-1 cursor-pointer">
-              <input type="radio" value="LOST" {...register("status")} className="peer sr-only" />
-              <div className="text-center p-4 border-2 rounded-lg peer-checked:border-red-500 peer-checked:bg-red-50 hover:bg-gray-50 transition-all font-bold text-gray-700">
-                I Lost Something
-              </div>
-            </label>
-            <label className="flex-1 cursor-pointer">
-              <input type="radio" value="FOUND" {...register("status")} className="peer sr-only" />
-              <div className="text-center p-4 border-2 rounded-lg peer-checked:border-green-500 peer-checked:bg-green-50 hover:bg-gray-50 transition-all font-bold text-gray-700">
-                I Found Something
-              </div>
-            </label>
-          </div> */}
-
+    
          {/* Item Title */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Item Title</label>
             <input
               type="text"
-              {...register("title")} // Changed to 'title'
+              {...register("title")} 
               className="w-full rounded-md border text-black border-gray-300 p-2 focus:border-blue-500 focus:ring-blue-500"
               placeholder="e.g., MacBook Air M4"
             />

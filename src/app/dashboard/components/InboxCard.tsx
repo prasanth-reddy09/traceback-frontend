@@ -36,7 +36,7 @@ export function InboxCard({ claim, currentUserId }: { claim: any, currentUserId:
               <User className="w-3.5 h-3.5" />
               {isFinder 
                 ? `Claim by ${claim.loserName}` 
-                : `Claimed from ${claim.finderName}` // This makes My Claims look better
+                : `Claimed from ${claim.finderName}` 
               }
             </span>
             <span className={`text-[9px] px-2.5 py-0.5 rounded-full font-black uppercase border ${statusStyles[claim.status]}`}>
