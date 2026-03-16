@@ -162,7 +162,7 @@ export default function ChatRoom({ claimId }: ChatRoomProps) {
           disabled={!input.trim()}
           className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 disabled:bg-blue-300 transition-colors flex items-center justify-center w-10 h-10"
         >
-          <Send className="w-5 h-5 ml-1 flex-shrink-0" />
+          <Send className="w-5 h-5 flex-shrink-0" />
         </button>
       </form>
     </div>

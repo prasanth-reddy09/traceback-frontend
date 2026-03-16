@@ -139,12 +139,12 @@ export default function LandingPage() {
           </div>
           <div className="grid md:grid-cols-3 gap-10">
             <FeatureCard 
-              icon={<MapPin className="w-6 h-6 text-blue-600" />}
+              icon={<MapPin className="w-6 h-6 text-amber-500" />}
               title="Location Precision"
               desc="Tag the exact spot where you found or lost an item using integrated geolocation data."
             />
             <FeatureCard 
-              icon={<ShieldCheck className="w-6 h-6 text-emerald-600" />}
+              icon={<ShieldCheck className="w-6 h-6 text-amber-500" />}
               title="Secure Claims"
               desc="Our proof-based verification system ensures items go to the right owners, every time."
             />
